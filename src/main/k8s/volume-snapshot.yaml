@@ -1,0 +1,8 @@
+apiVersion: snapshot.storage.k8s.io/v1beta1
+kind: VolumeSnapshot
+metadata:
+  name: k8sshowcase
+spec:
+  volumeSnapshotClassName: ionos-enterprise
+  source:
+    persistentVolumeClaimName: k8sshowcase

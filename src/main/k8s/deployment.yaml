@@ -30,7 +30,7 @@ spec:
             name: k8sshowcase-from-file
         - name: persistent-volume
           persistentVolumeClaim:
-            claimName: k8sshowcase
+            claimName: k8sshowcase-snapshot
       containers:
         - image: fritzduchardt/k8s-showcase-application:latest
           imagePullPolicy: Always
