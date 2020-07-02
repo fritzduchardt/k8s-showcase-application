@@ -31,20 +31,24 @@ public class K8sShowcaseController {
         return System.getenv("HOSTNAME");
     }
 
-    @GetMapping(path="/compute/{iterations}")
-    public String compute(@PathVariable int iterations) {
+    @GetMapping(path="/cpu/{iterations}")
+    public String cpu(@PathVariable int iterations) {
         log.info("Called compute with {} iterations", iterations);
         IntStream.range(0, iterations * 1000).parallel().forEach((i) -> Math.tan(Math.atan(Math.tan(Math.atan(i))))); ;
         return "done";
     }
 
-    @GetMapping(path="/ram/{iterations}")
-    public String ram(@PathVariable int iterations) {
+    @GetMapping(path="/memory/{iterations}")
+    public String memory(@PathVariable int iterations) throws InterruptedException {
         log.info("Called RAM with {} iterations", iterations);
         StringBuilder thousandRandomChars = new StringBuilder();
         IntStream.range(0, 1000).parallel().forEach((i) -> thousandRandomChars.append((int)(Math.random() * 256)));
         StringBuilder massiveString = new StringBuilder();
-        IntStream.range(0, 1000 * iterations).forEach((i) -> massiveString.append(thousandRandomChars.toString()));
+        for(int i = 0; i < 1000 * iterations; i++) {
+            massiveString.append(thousandRandomChars.toString());
+            Thread.sleep(10);
+
+        }
         return "done";
     }
 }
