@@ -12,10 +12,23 @@ This project contains a Java Spring Boot Application that is designed to show ca
 
 ## Prerequisites:
 
-- Metrics Exporter
-- Ingress Controller
+- Metrics Exporter (for Horizontal Pod Autoscaling)
 
+Can be installed like this:
+``` shell script
+helm install metrics-server stable/metrics-server --namespace kube-system --set 'args[0]=--kubelet-preferred-address-types=ExternalIP' --set 'args[1]=--kubelet-insecure-tls'
+```
+
+- Nginx Ingress Controller (for external access)
+
+Can be installed like this:
+``` shell script
+helm repo add nginx-stable https://helm.nginx.com/stable 
+helm install nginx-ingress stable/nginx-ingress
+```
 ## Usage
+
+### Deployments, Replicas, Pods, Ingress:
 
 ``` shell script
 # Let's get things started by createing a Deployment with environment variables from a ConfigMap and a Secret as well as a ConfigMap mounted as a volume.
@@ -44,7 +57,10 @@ kubectl apply -f src/main/k8s/ingress.yaml
 kubectl get service -l component=controller,release=nginx-ingress
 # ..and call the service externally like follows. *Observe that the Pod hostname changes, because calls are distributed between Pods.**
 curl [external-ip-address]/k8sshowcase/hostname
+```
 
+### Environment Variables, Volume Mounts from Config Maps:
+``` shell script
 # Let's query environment variables that were set with the ConfigMap
 curl localhost:8080/env/MESSAGE
 # ..and the environment variable set with the Secret
@@ -62,7 +78,25 @@ curl localhost:8080/list/configmap-from-file
 curl localhost:8080/content/configmap-from-file/eggs.txt
 
 # Now, let's make a change to the ConfigMap. Give it a couple of seconds and notice that for mounted ConfigMaps and Secrets changes are propagated without redeployment.
+```
 
+### Horizontal Pod Autoscaling:
+
+``` shell script
+# Next, let's test the Horizontal Pod Autoscaling.
+# Let's install the autoscaler like this:
+kubectl apply -f src/main/k8s/horizontal-autoscaler.yaml
+# Then, let's call an application endpoint that does a lot of computing and let's see what happens
+curl localhost:8080/cpu/1000000
+# The data collected by the Metrics Exporter can be queried like this, to see Pod resource usage. Please note that it takes a couple of seconds for usage statistics to get updated.
+kubectl top pods
+# Observe your Pods and see how additional ones gets added:
+kubectl get po -w
+```
+
+### Persistent Volumes and Volume Snapshots:<
+
+``` shell script
 # Next, let's change our deployment to mount a PersistentVolume
 kubectl apply -f src/main/k8s/deployment-with-persistent-volume.yaml
 
