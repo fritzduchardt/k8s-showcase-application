@@ -40,19 +40,19 @@ spec:
       volumes:
         - name: persistent-volume
           persistentVolumeClaim:
-            claimName: k8sshowcase
+            claimName: k8sshowcase-snapshot
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
-#      affinity:
-#        podAffinity:
-#          requiredDuringSchedulingIgnoredDuringExecution:
-#            - topologyKey: kubernetes.io/hostname
-#              labelSelector:
-#               matchExpressions:
-#                - key: app
-#                  operator: In
-#                  values:
-#                    - k8sshowcase
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+               matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - k8sshowcase

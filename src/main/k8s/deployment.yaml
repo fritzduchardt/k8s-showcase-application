@@ -9,7 +9,7 @@ metadata:
   namespace: default
 spec:
   progressDeadlineSeconds: 600
-  replicas: 1
+  replicas: 2
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -24,18 +24,14 @@ spec:
       labels:
         app: k8sshowcase
     spec:
-      volumes:
-        - name: configmap-volume
-          configMap:
-            name: k8sshowcase-from-file
       containers:
         - image: fritzduchardt/k8s-showcase-application:latest
           imagePullPolicy: Always
           name: k8s-showcase-application
           resources:
             requests:
-              cpu: 1
-              memory: 4Gi
+              cpu: 500m
+              memory: 256Mi
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           env:
@@ -43,15 +39,19 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: message
-                  name: k8sshowcase
+                  name: k8sshowcase-from-literal
             - name: SECRET_MESSAGE
               valueFrom:
                 secretKeyRef:
                   key: secret-message
-                  name: k8sshowcase
+                  name: k8sshowcase-from-literal
           volumeMounts:
             - mountPath: /configmap-from-file
               name: configmap-volume
+      volumes:
+        - name: configmap-volume
+          configMap:
+            name: k8sshowcase-from-file
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

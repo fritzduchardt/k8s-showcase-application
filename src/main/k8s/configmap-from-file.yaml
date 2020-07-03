@@ -1,10 +1,8 @@
 apiVersion: v1
+data:
+  eggs.txt: Why don't eggs tell jokes? They'd crack each other up.
+  stairs.txt: I don't trust stairs. They're always up to something.
 kind: ConfigMap
 metadata:
   name: k8sshowcase-from-file
   namespace: default
-data:
-  hello.txt: |
-    some-text
-  hello-2.txt: |
-    some-more-text
