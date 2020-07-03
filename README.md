@@ -94,7 +94,7 @@ kubectl top pods
 kubectl get po -w
 ```
 
-### Persistent Volumes and Volume Snapshots:<
+### Persistent Volumes and Volume Snapshots:
 
 ``` shell script
 # Next, let's change our deployment to mount a PersistentVolume
