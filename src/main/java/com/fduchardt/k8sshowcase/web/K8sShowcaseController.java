@@ -25,6 +25,13 @@ public class K8sShowcaseController {
         return list.map(p -> p.toFile().getPath() + "\n").collect(Collectors.joining());
     }
 
+    @GetMapping(path="/content/{filePath}/{fileName}")
+    public String getContent(@PathVariable String filePath, @PathVariable String fileName) throws IOException {
+        String completeFilePath = File.separatorChar + filePath + File.separatorChar + fileName;
+        log.info("content file: {}", completeFilePath);
+        return Files.readString(Path.of(completeFilePath));
+    }
+
     @GetMapping(path="/hostname")
     public String getHostname() {
         log.info("Queried hostname");
@@ -40,7 +47,7 @@ public class K8sShowcaseController {
 
     @GetMapping(path="/memory/{iterations}")
     public String memory(@PathVariable int iterations) throws InterruptedException {
-        log.info("Called RAM with {} iterations", iterations);
+        log.info("Called memory with {} iterations", iterations);
         StringBuilder thousandRandomChars = new StringBuilder();
         IntStream.range(0, 1000).parallel().forEach((i) -> thousandRandomChars.append((int)(Math.random() * 256)));
         StringBuilder massiveString = new StringBuilder();
