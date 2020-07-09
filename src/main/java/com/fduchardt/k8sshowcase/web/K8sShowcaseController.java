@@ -51,13 +51,13 @@ public class K8sShowcaseController {
         stackOverFlow();
     }
 
-    @GetMapping(path="/memory/{iterations}")
-    public String memory(@PathVariable int iterations) throws InterruptedException {
-        log.info("Called memory with {} iterations", iterations);
+    @GetMapping(path="/memory/{megabytes}")
+    public String memory(@PathVariable int megabytes) throws InterruptedException {
+        log.info("Called memory with {} megabytes", megabytes);
         StringBuilder thousandRandomChars = new StringBuilder();
         IntStream.range(0, 1000).parallel().forEach((i) -> thousandRandomChars.append((int)(Math.random() * 256)));
         StringBuilder massiveString = new StringBuilder();
-        for(int i = 0; i < 1000 * iterations; i++) {
+        for(int i = 0; i < megabytes; i++) {
             massiveString.append(thousandRandomChars.toString());
             Thread.sleep(10);
 
