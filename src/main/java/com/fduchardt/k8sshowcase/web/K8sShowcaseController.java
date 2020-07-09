@@ -47,6 +47,7 @@ public class K8sShowcaseController {
 
     @GetMapping(path="/stackoverflow")
     public void stackOverFlow() {
+        log.info("Causing Stackoverflow");
         while(true) {
             // yes this is intended
         }
