@@ -45,6 +45,13 @@ public class K8sShowcaseController {
         return "done";
     }
 
+    @GetMapping(path="/stackoverflow")
+    public void stackOverFlow() {
+        while(true) {
+            // yes this is intended
+        }
+    }
+
     @GetMapping(path="/memory/{iterations}")
     public String memory(@PathVariable int iterations) throws InterruptedException {
         log.info("Called memory with {} iterations", iterations);
