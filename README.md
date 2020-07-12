@@ -24,7 +24,7 @@ helm install metrics-server stable/metrics-server --namespace kube-system --set 
 Can be installed like this:
 ``` shell script
 helm repo add nginx-stable https://helm.nginx.com/stable 
-helm install nginx-ingress stable/nginx-ingress
+helm install nginx-ingress stable/nginx-ingress --namespace kube-system
 ```
 ## Usage
 
