@@ -16,7 +16,7 @@ This project contains a Java Spring Boot Application that is designed to show ca
 
 Can be installed like this:
 ``` shell script
-helm repo add stable https://kubernetes-charts.storage.googleapis.com
+helm repo add bitnami https://charts.bitnami.com/bitnami
 helm install metrics-server stable/metrics-server --namespace kube-system --set 'args[0]=--kubelet-preferred-address-types=ExternalIP' --set 'args[1]=--kubelet-insecure-tls'
 ```
 
