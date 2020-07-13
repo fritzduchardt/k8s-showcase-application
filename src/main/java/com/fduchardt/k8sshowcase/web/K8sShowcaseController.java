@@ -64,4 +64,19 @@ public class K8sShowcaseController {
         }
         return "done";
     }
+
+    @GetMapping(path="/space/{megabytes}")
+    public String space(@PathVariable int megabytes) throws IOException {
+        log.info("Called space with {} megabytes", megabytes);
+        StringBuilder thousandRandomChars = new StringBuilder();
+        IntStream.range(0, 1000).parallel().forEach((i) -> thousandRandomChars.append((int)(Math.random() * 256)));
+        StringBuilder massiveString = new StringBuilder();
+        FileOutputStream fileOutputStream = new FileOutputStream(new File("giga-file"));
+        for(int i = 0; i < megabytes; i++) {
+            massiveString.append(thousandRandomChars);
+            fileOutputStream.write(massiveString.toString().getBytes());
+        }
+        fileOutputStream.close();
+        return "done";
+    }
 }

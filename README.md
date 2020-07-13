@@ -12,7 +12,7 @@ This project contains a Java Spring Boot Application that is designed to show ca
 
 ## Prerequisites:
 
-- Metrics Exporter (for Horizontal Pod Autoscaling)
+- Metrics Server (for Horizontal Pod Autoscaling)
 
 Can be installed like this:
 ``` shell script
@@ -105,7 +105,7 @@ kubectl get po -w
 kubectl apply -f src/main/k8s/deployment-with-persistent-volume.yaml
 
 # You will notice that the Pods remain in "Pending" status. This is because they can't find their PeristentVolumeClaim. The claim gets created like this:
-kubectl apply -f src/main/k8s/deployment-with-persistent-volume.yaml
+kubectl apply -f src/main/k8s/persistentvolumeclaim.yaml 
 # Deployment might still fail due to the PersistentVolume being mounted from Pods on different nodes. If this happens comment in the affinity rules in the deployment.yaml and try again.
 
 # Once both Pods are running exec into one of them..
