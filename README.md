@@ -54,7 +54,7 @@ curl localhost:8080/hostname
 # Let's create an ingress entity to connect to the Service from outside the cluster
 kubectl apply -f src/main/k8s/ingress.yaml
 # Obtain the external cluster IP address like this..
-kubectl get service -l component=controller,release=nginx-ingress
+kubectl get service -l component=controller,release=nginx-ingress -n kube-system
 # ..and call the service externally like follows. *Observe that the Pod hostname changes, because calls are distributed between Pods.**
 curl [external-ip-address]/k8sshowcase/hostname
 ```
@@ -66,7 +66,9 @@ curl localhost:8080/env/MESSAGE
 # ..and the environment variable set with the Secret
 curl localhost:8080/env/SECRET_MESSAGE
 
-# Now, let's edit the ConfigMap and see whether this has any effect on the deployment:
+# Now, let's edit the ConfigMap..
+kubectl edit cm k8sshowcase-from-literal 
+..and see whether this has any effect on the deployment:
 curl localhost:8080/env/MESSAGE
 # It does NOT! So, let's delete the Pods to get them restarted:
 kubectl delete po -l app=k8sshowcase
@@ -78,6 +80,7 @@ curl localhost:8080/list/configmap-from-file
 curl localhost:8080/content/configmap-from-file/eggs.txt
 
 # Now, let's make a change to the ConfigMap. Give it a couple of seconds and notice that for mounted ConfigMaps and Secrets changes are propagated without redeployment.
+kubectl edit cm k8sshowcase-from-file 
 ```
 
 ### Horizontal Pod Autoscaling:
