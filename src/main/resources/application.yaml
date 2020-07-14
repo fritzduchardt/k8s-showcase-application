@@ -1,5 +1,5 @@
 storage:
-  folder-path: /tmp
+  folder-path: ${STORAGE_FOLDER_PATH:/tmp}
 
 management:
   endpoint:
