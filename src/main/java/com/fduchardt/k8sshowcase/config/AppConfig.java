@@ -4,6 +4,7 @@ import lombok.extern.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.*;
 import springfox.documentation.builders.*;
 import springfox.documentation.spi.*;
 import springfox.documentation.spring.web.plugins.*;
@@ -15,11 +16,19 @@ import java.io.*;
 @Slf4j
 public class AppConfig {
 
-    @Value("${storage.folder-path}")
+    @Value("${storage.storage-folder-path}")
     String storageFolderPath;
+
+    @Value("${storage.config-folder-path}")
+    String configFolderPath;
 
     @Value("${storage.validate-config}")
     boolean validateConfig;
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
 
     @Bean
     public String storageFolder() {
@@ -35,7 +44,7 @@ public class AppConfig {
     public boolean validateConfig() {
         if (validateConfig) {
             log.info("Validating config file exists: config.json");
-            String configPath = storageFolderPath + "/config.json";
+            String configPath = configFolderPath + "/config.json";
             boolean fileExists = new File(configPath).exists();
             if (!fileExists) {
                 throw new RuntimeException("Config file does not exist:" + configPath);

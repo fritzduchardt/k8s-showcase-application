@@ -1,6 +1,15 @@
 storage:
-  folder-path: ${STORAGE_FOLDER_PATH:/tmp}
+  storage-folder-path: ${STORAGE_FOLDER_PATH:/tmp}
+  config-folder-path: ${CONFIG_FOLDER_PATH:/config}
   validate-config: ${VALIDATE_CONFIG:false}
+service:
+  url: ${SERVICE_URL:k8sshowcase}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: admin
 
 management:
   endpoint:

@@ -124,5 +124,6 @@ kubectl delete deploy k8sshowcase
 # And recreate the deployment while pointing it to the new claim:
 kubectl apply -f src/main/k8s/deployment-with-persistent-volume-from-snapshot.yaml
 # Finally, verify that the previously created file has been restored:
+kubectl port-forward service/k8sshowcase 8080
 curl localhost:8080/content/persistent-volume/new-content.txt
 ```

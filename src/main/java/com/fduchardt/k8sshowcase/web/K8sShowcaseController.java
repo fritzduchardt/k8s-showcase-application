@@ -1,17 +1,32 @@
 package com.fduchardt.k8sshowcase.web;
 
+import com.google.common.base.*;
 import lombok.*;
 import lombok.extern.slf4j.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.jdbc.core.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.*;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.concurrent.*;
 import java.util.stream.*;
 
 @RequiredArgsConstructor
 @RestController
 @Slf4j
 public class K8sShowcaseController {
+
+    @Value("${service.url}")
+    String serviceUrl;
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     @GetMapping(path = "/env/{envVariable}")
     public String getEnvVariable(@PathVariable String envVariable) {
@@ -78,5 +93,27 @@ public class K8sShowcaseController {
             Thread.sleep(100);
         }
         return "done";
+    }
+
+    @GetMapping(path = "/forward/{path}")
+    public String forward(@PathVariable  String path) {
+        String forwardUrl = "http://" + serviceUrl + "/" + path;
+        log.info("Forwarding to url {}", forwardUrl);
+        Stopwatch sw = Stopwatch.createStarted();
+        String result = restTemplate.getForObject(forwardUrl, String.class);
+        sw.stop();
+        jdbcTemplate.execute("INSERT into forwards (paths, time) values('" + path + "', " + sw.elapsed(TimeUnit.MICROSECONDS) + ");");
+        return result;
+    }
+
+    @GetMapping(path = "/forward/{path1}/{path2}")
+    public String forward(@PathVariable String path1, @PathVariable  String path2) {
+        String forwardUrl = "http://" + serviceUrl + "/" + path1 + "/" + path2;
+        log.info("Forwarding to url {}", forwardUrl);
+        Stopwatch sw = Stopwatch.createStarted();
+        String result = restTemplate.getForObject(forwardUrl, String.class);
+        sw.stop();
+        jdbcTemplate.execute("INSERT into forwards (paths, time) values('" + path1 + "/" + path2 + "', " + sw.elapsed(TimeUnit.MICROSECONDS) + ");");
+        return result;
     }
 }
