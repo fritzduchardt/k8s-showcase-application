@@ -1,3 +1,6 @@
+storage:
+  folder-path: /tmp
+
 management:
   endpoint:
     health:
