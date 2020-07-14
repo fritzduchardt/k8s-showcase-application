@@ -18,6 +18,9 @@ public class AppConfig {
     @Value("${storage.folder-path}")
     String storageFolderPath;
 
+    @Value("${storage.validate-config}")
+    boolean validateConfig;
+
     @Bean
     public String storageFolder() {
         log.info("Ensure that storage folder does exist: {}", storageFolderPath);
@@ -26,5 +29,19 @@ public class AppConfig {
             throw new RuntimeException("Storage folder path not found:" + storageFolderPath);
         }
         return storageFolderPath;
+    }
+
+    @Bean
+    public boolean validateConfig() {
+        if (validateConfig) {
+            log.info("Validating config file exists: config.json");
+            String configPath = storageFolderPath + "/config.json";
+            boolean fileExists = new File(configPath).exists();
+            if (!fileExists) {
+                throw new RuntimeException("Config file does not exist:" + configPath);
+            }
+            return true;
+        }
+        return false;
     }
 }

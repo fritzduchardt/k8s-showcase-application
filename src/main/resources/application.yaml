@@ -1,5 +1,6 @@
 storage:
   folder-path: ${STORAGE_FOLDER_PATH:/tmp}
+  validate-config: ${VALIDATE_CONFIG:false}
 
 management:
   endpoint:
