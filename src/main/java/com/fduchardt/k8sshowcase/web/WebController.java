@@ -3,30 +3,26 @@ package com.fduchardt.k8sshowcase.web;
 import com.google.common.base.*;
 import lombok.*;
 import lombok.extern.slf4j.*;
+import org.apache.commons.io.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.jdbc.core.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.*;
 
 import java.io.*;
 import java.nio.file.*;
-import java.util.concurrent.*;
 import java.util.stream.*;
 
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-public class K8sShowcaseController {
+public class WebController {
 
     @Value("${service.url}")
     String serviceUrl;
 
     @Autowired
     RestTemplate restTemplate;
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
 
     @GetMapping(path = "/env/{envVariable}")
     public String getEnvVariable(@PathVariable String envVariable) {
@@ -81,15 +77,15 @@ public class K8sShowcaseController {
         return "done";
     }
 
-    @GetMapping(path = "/space/{megabytes}")
-    public String space(@PathVariable int megabytes) throws IOException, InterruptedException {
-        log.info("Called space with {} megabytes", megabytes);
-        StringBuilder thousandRandomChars = new StringBuilder();
-        IntStream.range(0, 1000000).forEach((i) -> thousandRandomChars.append((int) (Math.random() * 256)));
-        for (int i = 0; i < megabytes; i++) {
+    @GetMapping(path = "/space/{hundredMegabytes}")
+    public String space(@PathVariable int hundredMegabytes) throws IOException, InterruptedException {
+        log.info("Called space with {} hundred-megabytes", hundredMegabytes);
+        for (int i = 0; i < hundredMegabytes; i++) {
             FileOutputStream fileOutputStream = new FileOutputStream(new File("/tmp/space-" + i));
-            fileOutputStream.write(thousandRandomChars.toString().getBytes());
+            InputStream resourceAsStream = this.getClass().getResourceAsStream("/100MB.bin");
+            IOUtils.copy(resourceAsStream, fileOutputStream);
             fileOutputStream.close();
+            resourceAsStream.close();
             Thread.sleep(100);
         }
         return "done";
@@ -102,7 +98,6 @@ public class K8sShowcaseController {
         Stopwatch sw = Stopwatch.createStarted();
         String result = restTemplate.getForObject(forwardUrl, String.class);
         sw.stop();
-        jdbcTemplate.execute("INSERT into forwards (paths, time) values('" + path + "', " + sw.elapsed(TimeUnit.MICROSECONDS) + ");");
         return result;
     }
 
@@ -113,7 +108,6 @@ public class K8sShowcaseController {
         Stopwatch sw = Stopwatch.createStarted();
         String result = restTemplate.getForObject(forwardUrl, String.class);
         sw.stop();
-        jdbcTemplate.execute("INSERT into forwards (paths, time) values('" + path1 + "/" + path2 + "', " + sw.elapsed(TimeUnit.MICROSECONDS) + ");");
         return result;
     }
 }

@@ -13,6 +13,17 @@ This project contains a Java Spring Boot Application that is designed to show ca
 ## Prerequisites:
 
 - Metrics Server (for Horizontal Pod Autoscaling)
+- Postgres Database 
+```
+# Run database with
+docker run -e POSTGRES_PASSWORD=admin --network host postgres
+
+# Run client with
+docker run -it --rm --network host --name postgres-client dencold/pgcli postgresql://postgres:password@localhost:5432/postgres
+
+# Create Database with 
+create table k8sshowcase (created timestamp not null default now(), data varchar)
+```
 
 Can be installed like this:
 ``` shell script
