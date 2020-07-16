@@ -21,6 +21,9 @@ public class WebController {
     @Value("${service.url}")
     String serviceUrl;
 
+    @Value("${storage-folder-path}")
+    String outputDir;
+
     @Autowired
     RestTemplate restTemplate;
 
@@ -81,7 +84,7 @@ public class WebController {
     public String space(@PathVariable int hundredMegabytes) throws IOException, InterruptedException {
         log.info("Called space with {} hundred-megabytes", hundredMegabytes);
         for (int i = 0; i < hundredMegabytes; i++) {
-            FileOutputStream fileOutputStream = new FileOutputStream(new File("/tmp/space-" + i));
+            FileOutputStream fileOutputStream = new FileOutputStream(new File(outputDir + "/space-" + i));
             InputStream resourceAsStream = this.getClass().getResourceAsStream("/100MB.bin");
             IOUtils.copy(resourceAsStream, fileOutputStream);
             fileOutputStream.close();
