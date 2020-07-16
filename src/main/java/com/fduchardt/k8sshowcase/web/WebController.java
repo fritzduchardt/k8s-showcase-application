@@ -82,7 +82,7 @@ public class WebController {
 
     @GetMapping(path = "/space/{hundredMegabytes}")
     public String space(@PathVariable int hundredMegabytes) throws IOException, InterruptedException {
-        log.info("Called space with {} hundred-megabytes", hundredMegabytes);
+        log.info("Called space with {} * 100 Mi", hundredMegabytes);
         for (int i = 0; i < hundredMegabytes; i++) {
             FileOutputStream fileOutputStream = new FileOutputStream(new File(outputDir + "/space-" + i));
             InputStream resourceAsStream = this.getClass().getResourceAsStream("/100MB.bin");
