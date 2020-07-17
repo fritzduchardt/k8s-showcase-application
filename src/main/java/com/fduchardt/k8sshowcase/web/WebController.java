@@ -21,7 +21,7 @@ public class WebController {
     @Value("${service.url}")
     String serviceUrl;
 
-    @Value("${storage-folder-path}")
+    @Value("${storage.storage-folder-path}")
     String outputDir;
 
     @Autowired
