@@ -80,17 +80,11 @@ public class WebController {
         return "done";
     }
 
-    @GetMapping(path = "/space/{hundredMegabytes}")
-    public String space(@PathVariable int hundredMegabytes) throws IOException, InterruptedException {
-        log.info("Called space with {} * 100 Mi", hundredMegabytes);
-        for (int i = 0; i < hundredMegabytes; i++) {
-            FileOutputStream fileOutputStream = new FileOutputStream(new File(outputDir + "/space-" + i));
-            InputStream resourceAsStream = this.getClass().getResourceAsStream("/100MB.bin");
-            IOUtils.copy(resourceAsStream, fileOutputStream);
-            fileOutputStream.close();
-            resourceAsStream.close();
-            Thread.sleep(100);
-        }
+    @GetMapping(path = "/space/{numberOfMB}")
+    public String space(@PathVariable int numberOfMB) throws IOException {
+        log.info("Called space with {} Mb", numberOfMB);
+        Runtime rt = Runtime.getRuntime();
+        rt.exec("fallocate -l " + numberOfMB + "m " + outputDir + "/k8sshowcase.bin");
         return "done";
     }
 
