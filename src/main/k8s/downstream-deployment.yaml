@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: k8sshowcase-downstream
+  name: k8sshowcase-downstream
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: k8sshowcase-downstream
+  template:
+    metadata:
+      labels:
+        app: k8sshowcase-downstream
+    spec:
+      containers:
+        - image: fritzduchardt/k8s-showcase-application:latest
+          imagePullPolicy: Always
+          name: k8s-showcase-application
+          resources:
+            requests:
+              cpu: 500m
+              memory: 256Mi
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: nodb
+          livenessProbe:
+            httpGet:
+              port: 9090
+              path: /health

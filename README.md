@@ -13,17 +13,6 @@ This project contains a Java Spring Boot Application that is designed to show ca
 ## Prerequisites:
 
 - Metrics Server (for Horizontal Pod Autoscaling)
-- Postgres Database 
-```
-# Run database with
-docker run -e POSTGRES_PASSWORD=admin --network host postgres
-
-# Run client with
-docker run -it --rm --network host --name postgres-client dencold/pgcli postgresql://postgres:password@localhost:5432/postgres
-
-# Create Database with 
-create table k8sshowcase (created timestamp not null default now(), data varchar)
-```
 
 Can be installed like this:
 ``` shell script
@@ -67,7 +56,8 @@ curl localhost:8080/hostname
 kubectl apply -f src/main/k8s/ingress.yaml
 # Obtain the external cluster IP address like this..
 kubectl get service -l component=controller,release=nginx-ingress -n kube-system
-# ..and call the service externally like follows. *Observe that the Pod hostname changes, because calls are distributed between Pods.**
+# ..and call the service externally like follows.
+# Observe that the Pod hostname changes, because calls are distributed between Pods.
 curl [external-ip-address]/k8sshowcase/hostname
 ```
 
@@ -77,6 +67,8 @@ curl [external-ip-address]/k8sshowcase/hostname
 curl localhost:8080/env/MESSAGE
 # ..and the environment variable set with the Secret
 curl localhost:8080/env/SECRET_MESSAGE
+# You can do the same by calling `env` on one of your Pods:
+kubectl exec [name-of-your-Pod] -- env | grep MESSAGE
 
 # Now, let's edit the ConfigMap..
 kubectl edit cm k8sshowcase-from-literal 
@@ -93,6 +85,23 @@ curl localhost:8080/content/configmap-from-file/eggs.txt
 
 # Now, let's make a change to the ConfigMap. Give it a couple of seconds and notice that for mounted ConfigMaps and Secrets changes are propagated without redeployment.
 kubectl edit cm k8sshowcase-from-file 
+```
+
+### Service Discovery
+
+```
+# Let's deploy a downstream deployment that our deployment can call
+kubectl create -f src/main/k8s/downstream-deployment.yaml
+
+# This has to be exposed to the K8s cluster with a service
+kubectl create -f src/main/k8s/downstream-service.yaml
+
+# Now, our deployment has to get reconfigured to call the downstream service
+kubectl replace --force -f src/main/k8s/deployment-with-downstream-service.yaml
+
+# Lastly, let's call an endpoint on our deployment that forwards calls to the downstream service
+kubectl port-forward service/k8sshowcase 8080
+curl localhost:8080/forward/hostname
 ```
 
 ### Horizontal Pod Autoscaling:

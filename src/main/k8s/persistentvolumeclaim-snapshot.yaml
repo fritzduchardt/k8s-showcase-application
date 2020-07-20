@@ -4,7 +4,6 @@ metadata:
   name: k8sshowcase-snapshot
   labels:
     app: k8sshowcase
-  namespace: default
 spec:
   accessModes:
     - ReadWriteOnce
