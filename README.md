@@ -15,8 +15,15 @@ This project contains a Java Spring Boot Application that is designed to show ca
 - Metrics Server (for Horizontal Pod Autoscaling)
 
 Can be installed like this:
+
+To start with, register the Helm Hub repo and update your local machine.
+
 ``` shell script
-helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo add stable https://kubernetes-charts.storage.googleapis.com 
+helm repo update
+```
+
+``` shell script
 helm install metrics-server stable/metrics-server --namespace kube-system --set 'args[0]=--kubelet-preferred-address-types=ExternalIP' --set 'args[1]=--kubelet-insecure-tls'
 ```
 
@@ -24,9 +31,9 @@ helm install metrics-server stable/metrics-server --namespace kube-system --set 
 
 Can be installed like this:
 ``` shell script
-helm repo add nginx-stable https://helm.nginx.com/stable 
 helm install nginx-ingress stable/nginx-ingress --namespace kube-system
 ```
+
 ## Usage
 
 ### Deployments, Replicas, Pods, Ingress:
