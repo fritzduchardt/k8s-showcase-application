@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: k8sshowcase
+  name: k8sshowcase
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      volumeMounts:
+        - mountPath: /ebs-mount
+          name:  external-ebs
+  volumes:
+    - name: external-ebs
+      awsElasticBlockStore:
+        volumeID: vol-0a9fa026be44b0aa3

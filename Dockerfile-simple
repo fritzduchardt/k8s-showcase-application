@@ -1,0 +1,7 @@
+FROM openjdk
+
+LABEL maintainer="fduchardt"
+
+COPY /k8sshowcase/build/libs/k8sshowcase.jar ./
+
+CMD java -jar k8sshowcase.jar

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx
+spec:
+  serviceName: nginx
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          volumeMounts:
+            - name: dynamic-external-ebs
+              mountPath: /ebs
+  volumeClaimTemplates:
+  - metadata:
+      name: dynamic-external-ebs
+    spec:
+      resources:
+        requests:
+          storage: 18G
+      accessModes:
+        - ReadWriteOnce
+      volumeMode: Filesystem

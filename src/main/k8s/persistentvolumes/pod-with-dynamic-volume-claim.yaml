@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      volumeMounts:
+        - mountPath: /ebs-mount
+          name:  external-ebs
+  volumes:
+    - name: external-ebs
+      persistentVolumeClaim:
+        claimName: dynamic-external-ebs
