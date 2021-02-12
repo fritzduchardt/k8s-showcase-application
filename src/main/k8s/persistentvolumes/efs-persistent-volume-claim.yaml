@@ -8,6 +8,6 @@ spec:
       storage: 18G
   storageClassName: preprov-ebs
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   volumeMode: Filesystem
   volumeName: efs-pv

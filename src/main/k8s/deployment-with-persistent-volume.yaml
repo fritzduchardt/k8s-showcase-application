@@ -5,6 +5,7 @@ metadata:
     deployment.kubernetes.io/revision: "1"
   labels:
     app: k8sshowcase
+    environment: test
   name: k8sshowcase
 spec:
   replicas: 2
@@ -15,20 +16,11 @@ spec:
     metadata:
       labels:
         app: k8sshowcase
+        environment: test
     spec:
       containers:
-        - image: fritzduchardt/k8s-showcase-application:latest
-          env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: nodb
-          imagePullPolicy: Always
+        - image: quay.io/datawire/ambassador:1.10.0
           name: k8s-showcase-application
-          resources:
-            requests:
-              cpu: 500m
-              memory: 256Mi
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /persistent-volume
               name: persistent-volume
@@ -39,7 +31,7 @@ spec:
       affinity:
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: kubernetes.io/hostname
+            - topologyKey: failure-domain.beta.kubernetes.io/zone
               labelSelector:
                matchExpressions:
                 - key: app

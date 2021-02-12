@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.*;
 
 import java.io.*;
+import java.nio.charset.*;
 import java.nio.file.*;
+import java.util.Optional;
 import java.util.stream.*;
 
 @RequiredArgsConstructor
@@ -26,6 +28,27 @@ public class WebController {
 
     @Autowired
     RestTemplate restTemplate;
+
+    @PostMapping(path = "/sh")
+    public String executeShCommand(@RequestBody String shCommand) throws IOException, InterruptedException {
+        log.info("Executing: {}", shCommand);
+        ProcessBuilder builder = new ProcessBuilder(shCommand);
+        Process start = builder.start();
+        start.waitFor();
+        Optional<String> result = readAnswer(start);
+        final StringBuilder output = new StringBuilder();
+        result.ifPresent(s -> output.append(s));
+        return output.toString();
+    }
+
+    private Optional<String> readAnswer(Process process) throws IOException {
+        try (InputStream is = process.getInputStream()) {
+            if (is != null && is.available() > 0) {
+                return Optional.of(IOUtils.toString(is, StandardCharsets.UTF_8));
+            }
+        }
+        return Optional.empty();
+    }
 
     @GetMapping(path = "/env/{envVariable}")
     public String getEnvVariable(@PathVariable String envVariable) {
